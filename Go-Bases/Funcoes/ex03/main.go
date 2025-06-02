@@ -5,28 +5,30 @@ import "fmt"
 func main() {
 	minutosTrabalhados := 3600
 	result := getSalaryFromCategory(minutosTrabalhados, "B")
-	fmt.Printf("O salario final é: US$%d\n", result)
+	fmt.Printf("O salario final é: US$%f\n", result)
 }
 
-func getSalaryFromCategory(minutes int, category string) int {
-	salary := 0
+func getSalaryFromCategory(minutes int, category string) float64 {
+	salary := 0.0
 	switch category {
 	case "B":
 		hoursWorked := transformMinutesInHours(minutes)
-		salary = 1500
+		salary = 1.500
 		additional := 0.20
-		salary = (salary * hoursWorked)
-		salary = salary + (salary * int(additional))
+		salary = (salary * float64(hoursWorked))
+		fmt.Println(salary)
+		salary = salary + (salary * additional)
+		fmt.Println(salary)
 	case "C":
 		hoursWorked := transformMinutesInHours(minutes)
-		salary = 1000
-		salary = (salary * hoursWorked)
+		salary = 1.000
+		salary = (salary * float64(hoursWorked))
 	case "A":
 		hoursWorked := transformMinutesInHours(minutes)
-		salary = 3000
+		salary = 3.000
 		additional := 0.50
-		salary = (salary * hoursWorked)
-		salary = salary + (salary * int(additional))
+		salary = (salary * float64(hoursWorked))
+		salary = salary + (salary * additional)
 	}
 	return salary
 }

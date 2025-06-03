@@ -10,15 +10,14 @@ func main() {
 
 func getSalaryFromCategory(minutes int, category string) float64 {
 	salary := 0.0
+	additional := 0.0
 	switch category {
 	case "B":
 		hoursWorked := transformMinutesInHours(minutes)
 		salary = 1.500
-		additional := 0.20
+		additional = 0.20
 		salary = (salary * float64(hoursWorked))
-		fmt.Println(salary)
 		salary = salary + (salary * additional)
-		fmt.Println(salary)
 	case "C":
 		hoursWorked := transformMinutesInHours(minutes)
 		salary = 1.000
@@ -26,7 +25,7 @@ func getSalaryFromCategory(minutes int, category string) float64 {
 	case "A":
 		hoursWorked := transformMinutesInHours(minutes)
 		salary = 3.000
-		additional := 0.50
+		additional = 0.50
 		salary = (salary * float64(hoursWorked))
 		salary = salary + (salary * additional)
 	}

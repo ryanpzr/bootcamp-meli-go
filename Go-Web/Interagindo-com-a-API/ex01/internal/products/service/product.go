@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -95,7 +96,7 @@ func (p *Product) PostProduct(w http.ResponseWriter, r *http.Request) {
 
 	product.Id = productList[len(productList)-1].Id + 1
 
-	isEmpty, message := validateAttribs(product)
+	isEmpty, message := validateAttribs(product, "POST")
 	if isEmpty {
 		http.Error(w, message, http.StatusBadRequest)
 		return
@@ -122,20 +123,95 @@ func (p *Product) PostProduct(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&listProduct)
 }
 
-func validateAttribs(p domain.Product) (bool, string) {
+func (p *Product) PutProduct(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "PUT" {
+		http.Error(w, "O método da requisição deve ser do tipo POST", http.StatusBadRequest)
+		return
+	}
+
+	var product domain.Product
+	err := json.NewDecoder(r.Body).Decode(&product)
+	if err != nil {
+		panic(err)
+	}
+
+	isEmpty, message := validateAttribs(product, "PUT")
+	if isEmpty {
+		http.Error(w, message, http.StatusBadRequest)
+		return
+	}
+
+	newProduct, err := p.repo.PutProduct(product)
+	if err != nil {
+		http.Error(w, "Erro ao editar produto: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&newProduct)
+}
+
+func (p *Product) PatchProduct(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "PATCH" {
+		http.Error(w, "O método da requisição deve ser do tipo PATCH", http.StatusBadRequest)
+		return
+	}
+
+	var product domain.Product
+	err := json.NewDecoder(r.Body).Decode(&product)
+	if err != nil {
+		panic(err)
+	}
+
+	isEmpty, message := validateAttribs(product, "PATCH")
+	if isEmpty {
+		http.Error(w, message, http.StatusBadRequest)
+		return
+	}
+
+	newProduct, err := p.repo.PatchProduct(product)
+	if err != nil {
+		http.Error(w, "Erro ao editar produto: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&newProduct)
+}
+
+func (p *Product) DeleteProduct(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "DELETE" {
+		http.Error(w, "O método da requisição deve ser do tipo DELETE", http.StatusBadRequest)
+		return
+	}
+
+	path := r.URL.Path
+	id := strings.Split(path, "/")[2]
+
+	deletedProduct, err := p.repo.DeleteProduct(id)
+	if err != nil {
+		http.Error(w, "Erro ao deletar produto: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&deletedProduct)
+}
+
+func validateAttribs(p domain.Product, typeMethod string) (bool, string) {
 	switch {
-	case p.Quantity == 0:
+	case p.Quantity == 0 && typeMethod != "PATCH":
 		return true, "Quantidade não pode ser vazio"
 	case p.Code_value == "":
 		return true, "Code_value não pode ser vazio"
-	case p.Experation == "" || !isDate(p.Experation):
+	case p.Experation == "" && typeMethod != "PATCH" || p.Experation != "" && !isDate(p.Experation):
 		if p.Experation != "" {
 			return true, "Experation deve estar no formato: 00/00/0000"
 		}
 		return true, "Experation não pode ser vazio"
-	case p.Price == 0:
+	case p.Price == 0 && typeMethod != "PATCH":
 		return true, "Preço não pode ser vazio"
-	case p.Name == "":
+	case p.Name == "" && typeMethod != "PATCH":
 		return true, "Name não pode ser vazio"
 	default:
 		return false, ""

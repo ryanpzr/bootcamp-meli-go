@@ -20,4 +20,7 @@ func (h *Handler) NewRouters(router *chi.Mux) {
 	router.Get("/products/id", h.service.GetProductsById)
 	router.Get("/products/search", h.service.GetProductsSearch)
 	router.Post("/products", h.service.PostProduct)
+	router.Put("/products", h.service.PutProduct)
+	router.Patch("/products", h.service.PatchProduct)
+	router.Delete("/products/{id}", h.service.DeleteProduct)
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bootcamp-meli-go/Go-Web/Interagindo-com-a-API/ex01/internal/controller"
+	"bootcamp-meli-go/Go-Web/Interagindo-com-a-API/ex01/internal/products/domain"
 	"bootcamp-meli-go/Go-Web/Interagindo-com-a-API/ex01/internal/products/service"
 	"net/http"
 
@@ -10,8 +11,10 @@ import (
 
 func main() {
 	router := chi.NewRouter()
-	repository := service.NewRepository()
+	product := *domain.NewProduct()
+	repository := service.NewRepository(product)
 	service := service.NewService(*repository)
+	service.CreateList("../products.json")
 	handler := controller.NewHandler(*service)
 	handler.NewRouters(router)
 	http.ListenAndServe(":8080", router)

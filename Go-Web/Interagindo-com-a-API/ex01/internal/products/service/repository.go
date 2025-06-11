@@ -2,35 +2,41 @@ package service
 
 import (
 	"bootcamp-meli-go/Go-Web/Interagindo-com-a-API/ex01/internal/products/domain"
-	"encoding/json"
 	"errors"
-	"os"
 )
 
 type repository struct {
+	Product     domain.Product
 	ProductList []domain.Product
 }
 
-func NewRepository() *repository {
-	return &repository{}
+func NewRepository(product domain.ProductSt) *repository {
+	return &repository{Product: product.Product, ProductList: product.ListProduct}
 }
 
-func (r *repository) GetListProductsJson() ([]domain.Product, error) {
-	if len(r.ProductList) > 0 {
-		return r.ProductList, nil
+func (r *repository) GetProductsById(id int) (domain.Product, error) {
+	for _, product := range r.ProductList {
+		if product.Id == id {
+			return product, nil
+		}
 	}
 
-	fileJson, err := os.Open("../products.json")
-	if err != nil {
-		return nil, err
-	}
-	defer fileJson.Close()
+	return domain.Product{}, errors.New("Não foi encontrado registro que se aplica ao filtro enviado")
+}
 
-	if err := json.NewDecoder(fileJson).Decode(&r.ProductList); err != nil {
-		return nil, err
+func (r *repository) GetProductsSearch(priceInteger float64) ([]domain.Product, error) {
+	var productSearchList []domain.Product
+	for _, product := range r.ProductList {
+		if product.Price >= priceInteger {
+			productSearchList = append(productSearchList, product)
+		}
 	}
 
-	return r.ProductList, nil
+	if len(productSearchList) > 0 {
+		return productSearchList, nil
+	} else {
+		return nil, errors.New("Não foi encontrado registros que se aplicam ao filtro enviado")
+	}
 }
 
 func (r *repository) SaveProduct(product domain.Product) (domain.Product, error) {
@@ -57,8 +63,8 @@ func (r *repository) PatchProduct(product domain.Product) (domain.Product, error
 	for i, p := range r.ProductList {
 		if product.Code_value == p.Code_value {
 			switch {
-			case product.Experation != "" && product.Experation != p.Experation:
-				r.ProductList[i].Experation = product.Experation
+			case product.Expiration != "" && product.Expiration != p.Expiration:
+				r.ProductList[i].Expiration = product.Expiration
 			case product.Name != "" && product.Name != p.Name:
 				r.ProductList[i].Name = product.Name
 			case product.Price != 0 && product.Price != p.Price:
@@ -79,8 +85,9 @@ func (r *repository) PatchProduct(product domain.Product) (domain.Product, error
 func (r *repository) DeleteProduct(code_value string) (domain.Product, error) {
 	for i, p := range r.ProductList {
 		if p.Code_value == code_value {
+			result := r.ProductList[i]
 			r.ProductList = append(r.ProductList[:i], r.ProductList[i+1:]...)
-			return r.ProductList[i], nil
+			return result, nil
 		}
 	}
 

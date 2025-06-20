@@ -4,8 +4,10 @@ import (
 	"app/internal"
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/go-chi/chi/v5"
 	"net/http"
+	"regexp"
 	"strconv"
 )
 
@@ -37,6 +39,11 @@ func (s *ServiceTicketDefault) GetTotalTicketsByDestCountry(w http.ResponseWrite
 
 	dest := chi.URLParam(r, "dest")
 
+	if err := valParams(dest); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	totalTickets, err := s.rp.GetTotalTicketsByDestCountry(dest)
 	if err != nil {
 		http.Error(w, "Erro ao recuperar o total de tickets: "+err.Error(), http.StatusBadRequest)
@@ -55,6 +62,11 @@ func (s *ServiceTicketDefault) GetTicketsByDestCountry(w http.ResponseWriter, r 
 	}
 
 	dest := chi.URLParam(r, "dest")
+
+	if err := valParams(dest); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	ctx := context.Background()
 	totalTickets, err := s.rp.GetTicketsByDestCountry(ctx, dest)
@@ -76,6 +88,11 @@ func (s *ServiceTicketDefault) GetAverageTicketsByDest(w http.ResponseWriter, r 
 
 	dest := chi.URLParam(r, "dest")
 
+	if err := valParams(dest); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	totalAvTickets, err := s.rp.GetAverageTicketsByDest(dest)
 	if err != nil {
 		http.Error(w, "Erro ao recuperar média de tickets: "+err.Error(), http.StatusBadRequest)
@@ -85,4 +102,13 @@ func (s *ServiceTicketDefault) GetAverageTicketsByDest(w http.ResponseWriter, r 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(totalAvTickets)
+}
+
+func valParams(dest string) error {
+	re := regexp.MustCompile(`^[a-zA-Z]+$`)
+	if !re.MatchString(dest) {
+		return errors.New("Parâmetro deve conter apenas letras")
+	}
+
+	return nil
 }

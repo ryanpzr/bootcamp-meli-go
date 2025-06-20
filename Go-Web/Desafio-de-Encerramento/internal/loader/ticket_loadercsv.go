@@ -9,31 +9,25 @@ import (
 	"strconv"
 )
 
-// NewLoaderTicketCSV creates a new ticket loader from a CSV file
 func NewLoaderTicketCSV(filePath string) (*LoaderTicketCSV, error) {
 	return &LoaderTicketCSV{
 		filePath: filePath,
 	}, nil
 }
 
-// LoaderTicketCSV represents a ticket loader from a CSV file
 type LoaderTicketCSV struct {
 	filePath string
 }
 
-// Load loads the tickets from the CSV file
 func (t *LoaderTicketCSV) Load() (map[int]internal.TicketAttributes, error) {
-	// open the file
 	f, err := os.Open(t.filePath)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file: %v", err)
 	}
 	defer f.Close()
 
-	// read the file
 	r := csv.NewReader(f)
 
-	// read the records
 	ti := make(map[int]internal.TicketAttributes)
 	for {
 		record, err := r.Read()
@@ -46,7 +40,6 @@ func (t *LoaderTicketCSV) Load() (map[int]internal.TicketAttributes, error) {
 			return nil, err
 		}
 
-		// serialize the record
 		id := record[0]
 		idInt, _ := strconv.Atoi(id)
 
@@ -59,7 +52,6 @@ func (t *LoaderTicketCSV) Load() (map[int]internal.TicketAttributes, error) {
 			Price:   priceint,
 		}
 
-		// add the ticket to the map
 		ti[idInt] = ticket
 	}
 

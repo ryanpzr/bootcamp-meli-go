@@ -53,7 +53,7 @@ func NewApplicationDefault(cfg *ConfigAppDefault) *ApplicationDefault {
 	defaultRouter := chi.NewRouter()
 	defaultConfig := &ConfigAppDefault{
 		ServerAddr: ":8080",
-		DbFile:     "./docs/bd/tickets.csv",
+		DbFile:     "Go-Web/Desafio-de-Encerramento/docs/bd/tickets.csv",
 	}
 	if cfg != nil {
 		if cfg.ServerAddr != "" {

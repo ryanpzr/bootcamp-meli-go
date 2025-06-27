@@ -1,0 +1,27 @@
+- Quais seriam as entidades desse sistema?
+As entidades seriam Cliente e Produto.
+
+- Quais atributos devem ser determinados para cada entidade (considere o que for necessário)?
+
+Produto:
+Id PK
+Nome char(60)
+Material char(30)
+Heigth float
+Width float
+
+Cliente
+Id PK
+Nome char(60)
+Idade int
+Email varchar
+
+- Como serão moldadas as relações entre as entidades?
+Será uma relação de Muitos para Muitos (N:N). Um cliente poderá comprar vários produtos e vários produtos poderá ser
+comprado por vários clientes.
+
+- Quais seriam as cardinalidades?
+N:N
+
+- Realizar um DER para modelar o cenário.
+Foto do "der" está na pasta onde está localizado esse .txt que você está lendo

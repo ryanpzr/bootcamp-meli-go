@@ -1,0 +1,12 @@
+a. Qual é a primary key da tabela de clientes? Justifique sua resposta
+É o id, pois o id sempre será preenchido automaticamente de forma que não haja um id igual na tabela. Sua inicilização
+leva a tag "Primary Key".
+
+b. Qual é a primary key da tabela de planos de Internet? Justifique a resposta.
+É o id, pelos mesmos motivods da tabela clientes.
+
+c. Como seriam os relacionamentos entre as tabelas? Em qual tabela deve haver uma foreign key?
+A qual campo de qual tabela essa foreign key se refere? Justifique a resposta.
+A relação entre clientes e planos de internet é de um-para-muitos, ou seja, um cliente pode ter vários planos de internet,
+mas cada plano de internet pertence a apenas um cliente. Por isso, a chave estrangeira idCliente deve estar na tabela de
+planos de internet.

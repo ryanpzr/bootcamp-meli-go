@@ -1,0 +1,8 @@
+Descreva com suas próprias palavras cada etapa da decomposição e da aplicação das regras para visualizar a abordagem adotada.
+
+R: Foi separado da tabela de faturas, as informações do cliente como (nome, sobrenome e endereço) adotando um relacionamento
+de 1:N, no caso 1 cliente pode ter várias faturas. Também seguindo a linha de raciocinio, foi separada em outra tabela a parte
+as informações dos produtos que compõem a fatura, tendo em sua tabela a FK de cliente, FK de fatura e as informações
+do produto em si, o relacionamento com a tabela de faturas ficou de 1:N, uma fatura pode ter vários produtos, porém um produto
+pode estar estar em apenas 1 fatura, e relacionamento 1:N com a tabela de cliente também, 1 cliente pode ter vários produtos
+porém um produto pode ter apenas 1 cliente.

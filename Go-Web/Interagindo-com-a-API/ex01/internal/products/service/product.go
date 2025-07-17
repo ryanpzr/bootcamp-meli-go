@@ -2,6 +2,7 @@ package service
 
 import (
 	"bootcamp-meli-go/Go-Web/Interagindo-com-a-API/ex01/internal/products/domain"
+	"bootcamp-meli-go/Go-Web/Interagindo-com-a-API/ex01/internal/products/repository"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -12,10 +13,10 @@ import (
 )
 
 type Product struct {
-	repo repository
+	repo repository.Repository
 }
 
-func NewService(r repository) *Product {
+func NewService(r repository.Repository) *Product {
 	return &Product{repo: r}
 }
 

@@ -1,20 +1,20 @@
-package service
+package repository
 
 import (
 	"bootcamp-meli-go/Go-Web/Interagindo-com-a-API/ex01/internal/products/domain"
 	"errors"
 )
 
-type repository struct {
+type Repository struct {
 	Product     domain.Product
 	ProductList []domain.Product
 }
 
-func NewRepository(product domain.ProductSt) *repository {
-	return &repository{Product: product.Product, ProductList: product.ListProduct}
+func NewRepository(product domain.ProductSt) *Repository {
+	return &Repository{Product: product.Product, ProductList: product.ListProduct}
 }
 
-func (r *repository) GetProductsById(id int) (domain.Product, error) {
+func (r *Repository) GetProductsById(id int) (domain.Product, error) {
 	for _, product := range r.ProductList {
 		if product.Id == id {
 			return product, nil
@@ -24,7 +24,7 @@ func (r *repository) GetProductsById(id int) (domain.Product, error) {
 	return domain.Product{}, errors.New("Não foi encontrado registro que se aplica ao filtro enviado")
 }
 
-func (r *repository) GetProductsSearch(priceInteger float64) ([]domain.Product, error) {
+func (r *Repository) GetProductsSearch(priceInteger float64) ([]domain.Product, error) {
 	var productSearchList []domain.Product
 	for _, product := range r.ProductList {
 		if product.Price >= priceInteger {
@@ -39,13 +39,13 @@ func (r *repository) GetProductsSearch(priceInteger float64) ([]domain.Product, 
 	}
 }
 
-func (r *repository) SaveProduct(product domain.Product) (domain.Product, error) {
+func (r *Repository) SaveProduct(product domain.Product) (domain.Product, error) {
 	list := append(r.ProductList, product)
 	r.ProductList = list
 	return product, nil
 }
 
-func (r *repository) PutProduct(product domain.Product) (domain.Product, error) {
+func (r *Repository) PutProduct(product domain.Product) (domain.Product, error) {
 	for i, p := range r.ProductList {
 		if product.Code_value == p.Code_value {
 			if product.Id != p.Id {
@@ -59,7 +59,7 @@ func (r *repository) PutProduct(product domain.Product) (domain.Product, error) 
 	return domain.Product{}, errors.New("Não foi possivel achar um produto conforme o code enviado")
 }
 
-func (r *repository) PatchProduct(product domain.Product) (domain.Product, error) {
+func (r *Repository) PatchProduct(product domain.Product) (domain.Product, error) {
 	for i, p := range r.ProductList {
 		if product.Code_value == p.Code_value {
 			switch {
@@ -82,7 +82,7 @@ func (r *repository) PatchProduct(product domain.Product) (domain.Product, error
 	return domain.Product{}, errors.New("Não foi possivel achar um produto conforme o code enviado")
 }
 
-func (r *repository) DeleteProduct(code_value string) (domain.Product, error) {
+func (r *Repository) DeleteProduct(code_value string) (domain.Product, error) {
 	for i, p := range r.ProductList {
 		if p.Code_value == code_value {
 			result := r.ProductList[i]

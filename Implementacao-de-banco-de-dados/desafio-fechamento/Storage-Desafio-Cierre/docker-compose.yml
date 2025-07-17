@@ -1,0 +1,18 @@
+services:
+  db:
+    container_name: mysql_challenge
+    image: mysql:8.3.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: fantasy_products
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docs/db/mysql/01-database.sql:/docker-entrypoint-initdb.d/01-database.sql
+      - ./docs/db/mysql/02-database-test.sql:/docker-entrypoint-initdb.d/02-database-test.sql
+      - ./docs/db/mysql/03-seed-test.sql:/docker-entrypoint-initdb.d/03-seed-test.sql
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

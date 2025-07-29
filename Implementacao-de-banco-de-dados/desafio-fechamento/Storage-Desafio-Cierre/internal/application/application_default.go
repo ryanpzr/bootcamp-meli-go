@@ -99,7 +99,6 @@ func (a *ApplicationDefault) SetUp() (err error) {
 		r.Post("/populate", hdCustomer.Populate())
 		r.Get("/condition", hdCustomer.GetCondition())
 		r.Get("/ranking", hdCustomer.GetRankingCus())
-
 	})
 	a.router.Route("/products", func(r chi.Router) {
 		// - GET /products

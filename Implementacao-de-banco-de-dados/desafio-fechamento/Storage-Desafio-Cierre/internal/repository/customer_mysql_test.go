@@ -31,7 +31,7 @@ func TestCustomersMySQL_GetCondition(t *testing.T) {
 
 	hd.GetCondition().ServeHTTP(res, req)
 
-	expected := `{"data":[{"name":"activo","invoice_total":23},{"name":"inactivo","invoice_total":34.5}]}`
+	expected := `{"data":[{"name":"activo","invoice_total":23},{"name":"inactivo","invoice_total":35}]}`
 
 	require.Equal(t, http.StatusOK, res.Code)
 	require.Equal(t, "application/json", res.Header().Get("Content-Type"))
@@ -50,6 +50,7 @@ func TestCustomersMySQL_GetRankingCus(t *testing.T) {
 	hd := handler.NewCustomersDefault(sv)
 
 	req := &http.Request{
+		Method: "GET",
 		Header: http.Header{
 			"Content-Type": []string{"application/json"},
 		},
@@ -58,8 +59,9 @@ func TestCustomersMySQL_GetRankingCus(t *testing.T) {
 
 	hd.GetRankingCus().ServeHTTP(res, req)
 
-	expected := `{"data":[{"first_name":"Marcos","last_name":"Frota","total":34.5},{"first_name":"Ryan","last_name":"Pereira","total":23}]}`
+	expected := `{"data":[{"first_name":"Marcos","last_name":"Frota","total":35},{"first_name":"Ryan","last_name":"Pereira","total":23}]}`
 
+	require.Equal(t, http.MethodGet, req.Method)
 	require.Equal(t, http.StatusOK, res.Code)
 	require.Equal(t, "application/json", res.Header().Get("Content-Type"))
 	require.Equal(t, expected, res.Body.String())
